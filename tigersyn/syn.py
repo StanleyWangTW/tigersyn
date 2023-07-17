@@ -7,7 +7,7 @@ import nibabel as nib
 from nilearn.image import resample_to_img
 import numpy as np
 
-import syn_tool
+from tigersyn import syn_tool
 
 model_ff = r"models\mprage_syntheseg_v001_unet.onnx"
 

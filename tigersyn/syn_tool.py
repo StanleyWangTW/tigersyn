@@ -4,7 +4,6 @@ import nibabel as nib
 from nilearn.image import reorder_img
 import numpy as np
 import onnxruntime as ort
-import matplotlib.pyplot as plt
 
 label_all = dict()
 label_all['syntheseg'] = (

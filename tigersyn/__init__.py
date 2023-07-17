@@ -1,1 +1,1 @@
-from .syn import run
+from tigersyn.syn import run
