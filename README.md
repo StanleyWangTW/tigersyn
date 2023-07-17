@@ -1,6 +1,6 @@
 # TigerSyn
 
-[Github-link](https://guides.github.com/features/mastering-markdown/)
+[Github-link](https://github.com/StanleyWangTW/tigersyn)
 
 ### As python package
 
