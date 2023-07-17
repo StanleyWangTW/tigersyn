@@ -47,7 +47,6 @@ def download(url, file_name):
     import shutil
     import ssl
     context = ssl.create_default_context(cafile=certifi.where())
-    #urllib.request.urlopen(url, cafile=certifi.where())
     with urllib.request.urlopen(url,
                                 context=context) as response, open(file_name, 'wb') as out_file:
         shutil.copyfileobj(response, out_file)

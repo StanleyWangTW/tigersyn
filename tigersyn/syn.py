@@ -13,6 +13,7 @@ model_syn = r"mprage_syntheseg_v001_unet.onnx"
 
 def produce_mask(model, f, GPU):
     model_ff = syn_tool.get_model(model)
+    print(model_ff)
     input_nib = nib.load(f)
     input_nib_resp = syn_tool.read_file(model_ff, f)
 
@@ -77,4 +78,4 @@ def run(argstring, input, output=None, model=None):
         print('Processing time: %d seconds' %  (time.time() - t))
 
 if __name__ == "__main__":
-    run("sz", r"D:\synthseg_pc\dataset\cc359\Original", r"outputs")
+    run("sz", r"T1w.nii.gz", r"outputs")
