@@ -9,9 +9,10 @@ import numpy as np
 
 from tigersyn import syn_tool
 
-model_ff = r"models\mprage_syntheseg_v001_unet.onnx"
+model_syn = r"mprage_syntheseg_v001_unet.onnx"
 
-def produce_mask(f, GPU):
+def produce_mask(model, f, GPU):
+    model_ff = syn_tool.get_model(model)
     input_nib = nib.load(f)
     input_nib_resp = syn_tool.read_file(model_ff, f)
 
@@ -70,7 +71,7 @@ def run(argstring, input, output=None, model=None):
         ftemplate = join(f_output_dir, ftemplate)
         
         if syn:
-            aseg_nib = produce_mask(f, GPU=gpu)
+            aseg_nib = produce_mask(model_syn, f, GPU=gpu)
             fn = syn_tool.save_nib(aseg_nib, ftemplate, 'syn')
 
         print('Processing time: %d seconds' %  (time.time() - t))

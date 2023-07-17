@@ -1,9 +1,22 @@
-from os.path import basename
+import os
+from os.path import basename, isfile, join
+import sys
 
 import nibabel as nib
 from nilearn.image import reorder_img
 import numpy as np
 import onnxruntime as ort
+
+model_servers = ["https://github.com/StanleyWangTW/tigersyn/releases/download/v0.0.2-alpha/mprage_syntheseg_v001_unet.onnx"]
+# determine if application is a script file or frozen exe
+if getattr(sys, 'frozen', False):
+    application_path = os.path.dirname(sys.executable)
+elif __file__:
+    application_path = os.path.dirname(os.path.abspath(__file__))
+
+model_path = join(application_path, 'models')
+print(model_path)
+os.makedirs(model_path, exist_ok=True)
 
 label_all = dict()
 label_all['syntheseg'] = (
@@ -28,12 +41,53 @@ def read_file(model_ff, input_file):
     return vol_nib
 
 
+def download(url, file_name):
+    import urllib.request
+    import certifi
+    import shutil
+    import ssl
+    context = ssl.create_default_context(cafile=certifi.where())
+    #urllib.request.urlopen(url, cafile=certifi.where())
+    with urllib.request.urlopen(url,
+                                context=context) as response, open(file_name, 'wb') as out_file:
+        shutil.copyfileobj(response, out_file)
+
+def get_model(f):
+    if isfile(f):
+        return f
+    
+    if '.onnx' in f:
+        fn = f
+    else:
+        fn = f + '.onnx'
+
+    model_file = join(model_path, fn)
+
+    if not os.path.exists(model_file):
+        
+        for server in model_servers:
+            try:
+                print(f'Downloading model files....')
+                model_url = server
+                print(model_url, model_file)
+                download(model_url, model_file)
+                download_ok = True
+                print('Download finished...')
+                break
+            except:
+                download_ok = False
+
+        if not download_ok:
+            raise ValueError('Server error. Please check the model name or internet connection.')
+                
+    return model_file
+
+
 def get_mode(model_ff):
     seg_mode, version, model_str = basename(model_ff).split('_')[1:4]  # aseg43, bet
     #print(seg_mode, version , model_str)
 
     return seg_mode, version, model_str
-
 
 def normalize(data):
     return (data - data.min()) / (data.max() - data.min())
