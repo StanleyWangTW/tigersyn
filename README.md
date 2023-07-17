@@ -1,14 +1,9 @@
 # TigerSyn
-
-[Github-link](https://github.com/StanleyWangTW/tigersyn)
-
 ### As python package
-
 **Download**
 ```
 pip install tigersyn
 ```
-
 **Usage**
 ```python
 import tigersyn
