@@ -7,7 +7,16 @@ from nilearn.image import reorder_img
 import numpy as np
 import onnxruntime as ort
 
-model_servers = ["https://github.com/StanleyWangTW/tigersyn/releases/download/v0.0.2-alpha/mprage_syntheseg_v001_unet.onnx"]
+label_all = dict()
+label_all['syntheseg'] = (
+    2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26,
+    28, 41, 42, 43, 44, 46, 47, 49, 50, 51, 52, 53, 54, 58, 60
+)
+
+model_servers = [
+    'https://github.com/StanleyWangTW/tigersyn/releases/download/modelhub/'
+]
+
 # determine if application is a script file or frozen exe
 if getattr(sys, 'frozen', False):
     application_path = os.path.dirname(sys.executable)
@@ -15,31 +24,7 @@ elif __file__:
     application_path = os.path.dirname(os.path.abspath(__file__))
 
 model_path = join(application_path, 'models')
-print(model_path)
 os.makedirs(model_path, exist_ok=True)
-
-label_all = dict()
-label_all['syntheseg'] = (
-    2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26,
-    28, 41, 42, 43, 44, 46, 47, 49, 50, 51, 52, 53, 54, 58, 60
-)
-
-def read_nib(input_nib):
-    """nib to 5D numpy"""
-    return input_nib.get_fdata()[None, None, ...]
-
-def save_nib(data_nib, ftemplate, postfix):
-    output_file = ftemplate.replace('@@@@', postfix)
-    nib.save(data_nib, output_file)
-    print('Writing output file: ', output_file)
-    return output_file
-
-def read_file(model_ff, input_file):
-    """load nib and reorder"""
-    input_nib = nib.load(input_file)
-    vol_nib = reorder_img(input_nib, resample="continuous")
-    return vol_nib
-
 
 def download(url, file_name):
     import urllib.request
@@ -63,11 +48,10 @@ def get_model(f):
     model_file = join(model_path, fn)
 
     if not os.path.exists(model_file):
-        
         for server in model_servers:
             try:
                 print(f'Downloading model files....')
-                model_url = server
+                model_url = server + fn
                 print(model_url, model_file)
                 download(model_url, model_file)
                 download_ok = True
@@ -80,6 +64,23 @@ def get_model(f):
             raise ValueError('Server error. Please check the model name or internet connection.')
                 
     return model_file
+
+
+def read_nib(input_nib):
+    """nib to 5D numpy"""
+    return input_nib.get_fdata()[None, None, ...]
+
+def save_nib(data_nib, ftemplate, postfix):
+    output_file = ftemplate.replace('@@@@', postfix)
+    nib.save(data_nib, output_file)
+    print('Writing output file: ', output_file)
+    return output_file
+
+def read_file(model_ff, input_file):
+    """load nib and reorder"""
+    input_nib = nib.load(input_file)
+    vol_nib = reorder_img(input_nib, resample="continuous")
+    return vol_nib
 
 
 def get_mode(model_ff):

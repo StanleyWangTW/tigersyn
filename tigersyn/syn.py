@@ -49,6 +49,9 @@ def run(argstring, input, output=None, model=None):
         input_file_list = glob.glob(join(input[0], '*.nii'))
         input_file_list += glob.glob(join(input[0], '*.nii.gz'))
 
+    elif '*' in input[0]:
+        input_file_list = glob.glob(input[0])
+
     output_dir = output
 
     print('Total nii files:', len(input_file_list))
