@@ -14,6 +14,7 @@ tigersyn.run('sz', r'C:\T1w_dir') # Force storing nii.gz format
 ```
 ```
 s: Producing syntheseg mask
+h: Producing hippocampus mask
 z: Force storing nii.gz format
 ```
 

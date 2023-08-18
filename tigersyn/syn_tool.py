@@ -8,7 +8,7 @@ import numpy as np
 import onnxruntime as ort
 
 label_all = dict()
-label_all['syntheseg'] = (
+label_all['synthseg'] = (
     2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26,
     28, 41, 42, 43, 44, 46, 47, 49, 50, 51, 52, 53, 54, 58, 60
 )
@@ -113,15 +113,24 @@ def run(model_ff, input_nib, GPU):
     # data = normalize(data)
 
     logits = predict(model_ff, data, GPU)[0, ...]
-    mask_pred = np.argmax(logits, axis=0)
 
-    if seg_mode in ['syntheseg']:
+    if seg_mode in ['synthseg']:
+        mask_pred = np.argmax(logits, axis=0)
+        
         labels = label_all[seg_mode]
         mask_pred_relabel = mask_pred * 0
         for ii in range(len(labels)):
             mask_pred_relabel[mask_pred == (ii + 1)] = labels[ii]
             #print((ii+1), labels[ii])
         mask_pred = mask_pred_relabel
+
+    if seg_mode in ['hippocampus']:
+        def sigmoid(x):
+            return 1 / (1 + np.exp(-x))
+        
+        mask_pred = sigmoid(logits[0, ...])
+        mask_pred[mask_pred >= 0.5] = 1
+        mask_pred[mask_pred < 0.5] = 0
     
     mask_pred = mask_pred.astype(int)
     output_nib = nib.Nifti1Image(mask_pred, input_nib.affine, input_nib.header)

@@ -9,7 +9,9 @@ import numpy as np
 
 from tigersyn import syn_tool
 
-model_syn = r"mprage_syntheseg_v001_unet.onnx"
+all_model = dict()
+all_model['syn'] = r'synthseg_synthseg_v001_unet.onnx'
+all_model['hippo'] = r'mix_hippocampus_v001_unet.onnx'
 
 def produce_mask(model, f, GPU):
     model_ff = syn_tool.get_model(model)
@@ -38,6 +40,7 @@ def produce_mask(model, f, GPU):
 
 def run(argstring, input, output=None, model=None):
     syn = "s" in argstring
+    hippo = 'h' in argstring
     gpu = "g" in argstring
     get_z = 'z' in argstring
 
@@ -74,8 +77,12 @@ def run(argstring, input, output=None, model=None):
         ftemplate = join(f_output_dir, ftemplate)
         
         if syn:
-            aseg_nib = produce_mask(model_syn, f, GPU=gpu)
+            aseg_nib = produce_mask(all_model['syn'], f, GPU=gpu)
             fn = syn_tool.save_nib(aseg_nib, ftemplate, 'syn')
+
+        if hippo:
+            hippo_nib = produce_mask(all_model['hippo'], f, GPU=gpu)
+            fn = syn_tool.save_nib(hippo_nib, ftemplate, 'hippocampus')
 
         print('Processing time: %d seconds' %  (time.time() - t))
 
