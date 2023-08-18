@@ -93,7 +93,10 @@ def normalize(data):
     return (data - data.min()) / (data.max() - data.min())
 
 def predict(model, data, GPU):
-    """read array-like data, then segmentation"""
+    """ model: onnx file path
+        data: numpy.Array
+        GPU: bool
+        read data, then segmentation"""
     if GPU and (ort.get_device() == "GPU"):
         ort_sess = ort.InferenceSession(model, providers=['CUDAExecutionProvider'])
     else:
