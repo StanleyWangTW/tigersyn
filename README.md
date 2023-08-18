@@ -13,7 +13,7 @@ tigersyn.run('s', r'C:\T1w_dir\**\*.nii.gz') # storing output in the same dir
 tigersyn.run('sz', r'C:\T1w_dir') # Force storing nii.gz format
 ```
 ```
-s: Producing syntheseg mask
+s: Producing SynthSeg mask
 h: Producing hippocampus mask
 z: Force storing nii.gz format
 ```
