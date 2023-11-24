@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-VESION = '0.0.5'
+VESION = '0.0.6'
 DESCRIPTION = 'Processing MRI images based on deep-learning'
 CLASSIFIERS = [
     'Intended Audience :: Developers', 'Programming Language :: Python :: 3.9',
@@ -22,5 +22,5 @@ setup(name='tigersyn',
       License='MIT',
       packages=find_packages(),
       classifiers=CLASSIFIERS,
-      python_requires='>=3.9',
+      python_requires='>=3.7',
       install_requires=['numpy', 'nibabel', 'nilearn', 'onnxruntime'])
