@@ -1,0 +1,2 @@
+global-include *.txt *.py *.onnx
+exclude *.nii.gz
