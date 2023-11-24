@@ -11,6 +11,8 @@ tigersyn.run('s', r'C:\T1w_dir', r'C:\output_dir')
 tigersyn.run('s', r'C:\T1w_dir\**\*.nii.gz', r'C:\output_dir')
 tigersyn.run('s', r'C:\T1w_dir\**\*.nii.gz') # storing output in the same dir
 tigersyn.run('sz', r'C:\T1w_dir') # Force storing nii.gz format
+
+tigersyn.predict_age(r'aseg_mask.nii.gz')
 ```
 ```
 s: Producing SynthSeg mask
