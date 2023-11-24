@@ -2,7 +2,7 @@
 ### As python package
 **Download**
 ```
-pip install tigersyn
+pip install https://github.com/StanleyWangTW/tigersyn/archive/release.zip
 ```
 **Usage**
 ```python
