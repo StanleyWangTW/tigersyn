@@ -1,15 +1,16 @@
 import onnxruntime as rt
 import numpy as np
-from utils import get_volumes
+from .utils import get_volumes
 
 labels = [
     2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26, 28, 41, 42, 43,
     44, 46, 47, 49, 50, 51, 52, 53, 54, 58, 60
 ]
 selected_features_idx = [1, 2, 6, 10, 15, 18, 19, 23, 25, 29]
+model_ff = r'tigersyn\models\aseg_age_v001_linreg.onnx'
 
 
-def predict_age(f, model_ff):
+def predict_age(f):
     vols = np.expand_dims(get_volumes(f, labels), axis=0)
     selected_vols = vols[:, selected_features_idx].astype(np.float32)
 
