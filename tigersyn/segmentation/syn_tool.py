@@ -1,11 +1,14 @@
 import os
 from os.path import basename, isfile, join
 import sys
+import warnings
 
 import nibabel as nib
 from nilearn.image import reorder_img
 import numpy as np
 import onnxruntime as ort
+
+warnings.filterwarnings("ignore", category=UserWarning)
 
 label_all = dict()
 label_all['synthseg'] = (2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18,
@@ -26,16 +29,6 @@ elif __file__:
 model_path = join(application_path, 'models')
 os.makedirs(model_path, exist_ok=True)
 
-# def download(url, file_name):
-#     import urllib.request
-#     import certifi
-#     import shutil
-#     import ssl
-#     context = ssl.create_default_context(cafile=certifi.where())
-#     with urllib.request.urlopen(url, context=context) as response, open(
-#             file_name, 'wb') as out_file:
-#         shutil.copyfileobj(response, out_file)
-
 
 def get_model(f):
     if isfile(f):
@@ -47,27 +40,9 @@ def get_model(f):
         fn = f + '.onnx'
 
     model_file = join(model_path, fn)
+
     if not os.path.exists(model_file):
-        print(model_file)
-        raise RuntimeError('model not found.')
-
-    # if not os.path.exists(model_file):
-    #     for server in model_servers:
-    #         try:
-    #             print('Downloading model files....')
-    #             model_url = server + fn
-    #             print(model_url, model_file)
-    #             download(model_url, model_file)
-    #             download_ok = True
-    #             print('Download finished...')
-    #             break
-    #         except:
-    #             download_ok = False
-
-    #     if not download_ok:
-    #         raise ValueError(
-    #             'Server error. Please check the model name or internet connection.'
-    #         )
+        raise RuntimeError(f'Model not found. Should at {model_file}')
 
     return model_file
 
