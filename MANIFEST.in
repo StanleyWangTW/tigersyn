@@ -1,2 +1,2 @@
-global-include *.txt *.py *.onnx
+global-include *.py *.onnx *.joblib
 exclude *.nii.gz
