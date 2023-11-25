@@ -21,7 +21,7 @@ setup(name='tigersyn',
       author_email='',
       License='MIT',
       packages=find_packages(),
-      package_data=['*.onnx'],
+      include_package_data=True,
       classifiers=CLASSIFIERS,
       python_requires='>=3.7',
       install_requires=['numpy', 'nibabel', 'nilearn', 'onnxruntime'])
