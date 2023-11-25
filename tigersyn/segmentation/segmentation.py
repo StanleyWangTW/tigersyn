@@ -10,7 +10,7 @@ import numpy as np
 from . import syn_tool
 
 all_model = dict()
-all_model['syn'] = r'any_synthseg_v001_synthseg.onnx'
+all_model['syn'] = r'any_synthseg_v002_synthseg.onnx'
 all_model['hippo'] = r'any_hippocampus_v001_mix.onnx'
 
 

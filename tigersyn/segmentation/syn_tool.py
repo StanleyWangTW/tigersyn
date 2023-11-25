@@ -12,8 +12,8 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 label_all = dict()
 label_all['synthseg'] = (2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-                         26, 28, 41, 42, 43, 44, 46, 47, 49, 50, 51, 52, 53,
-                         54, 58, 60)
+                         24, 26, 28, 41, 42, 43, 44, 46, 47, 49, 50, 51, 52,
+                         53, 54, 58, 60)
 
 model_servers = [
     'https://github.com/StanleyWangTW/tigersyn/releases/download/modelhub/'
