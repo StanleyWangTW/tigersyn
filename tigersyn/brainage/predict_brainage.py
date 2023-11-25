@@ -1,3 +1,5 @@
+from os.path import join, dirname, abspath
+
 import joblib
 import onnxruntime as ort
 import numpy as np
@@ -9,9 +11,10 @@ labels = [
     44, 46, 47, 49, 50, 51, 52, 53, 54, 58, 60
 ]
 
-model_ff = r'tigersyn\models\aseg_age_v001_mlp.onnx'
-mean = joblib.load(r'tigersyn\models\s_values.joblib')
-std = joblib.load(r'tigersyn\models\u_values.joblib')
+model_dir = join(dirname(dirname(abspath(__file__))), 'models')
+model_ff = join(model_dir, 'aseg_age_v001_mlp.onnx')
+mean = joblib.load(join(model_dir, 'u_values.joblib'))
+std = joblib.load(join(model_dir, 's_values.joblib'))
 selected_features_idx = [0, 1, 4, 5, 6, 7, 11, 15, 17, 18, 21, 22, 23, 24, 29]
 
 

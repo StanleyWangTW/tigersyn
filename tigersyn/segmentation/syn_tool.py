@@ -1,5 +1,5 @@
 import os
-from os.path import basename, isfile, join
+from os.path import abspath, basename, isfile, join, dirname
 import sys
 import warnings
 
@@ -21,10 +21,9 @@ model_servers = [
 
 # determine if application is a script file or frozen exe
 if getattr(sys, 'frozen', False):
-    application_path = os.path.dirname(sys.executable)
+    application_path = dirname(sys.executable)
 elif __file__:
-    application_path = 'tigersyn'
-    # application_path = os.path.dirname(os.path.abspath(__file__))
+    application_path = dirname(dirname(abspath(__file__)))
 
 model_path = join(application_path, 'models')
 os.makedirs(model_path, exist_ok=True)
