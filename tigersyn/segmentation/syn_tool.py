@@ -114,7 +114,7 @@ def run(model_ff, input_nib, GPU):
     seg_mode, _, model_str = get_mode(model_ff)
 
     data = read_nib(input_nib)
-    # data = normalize(data)
+    data = normalize(data)
 
     logits = predict(model_ff, data, GPU)[0, ...]
 
