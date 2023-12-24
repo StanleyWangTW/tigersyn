@@ -10,7 +10,7 @@ import numpy as np
 from . import syn_tool
 
 all_model = dict()
-all_model['syn'] = r'any_synthseg_v002_synthseg.onnx'
+all_model['syn'] = r'any_synthseg_v003_synthseg.onnx'
 all_model['hippo'] = r'any_hippocampus_v001_mix.onnx'
 
 
@@ -21,9 +21,7 @@ def produce_mask(model, f, GPU):
 
     mask_nib_resp = syn_tool.run(model_ff, input_nib_resp, GPU=GPU)
 
-    mask_nib = resample_to_img(mask_nib_resp,
-                               input_nib,
-                               interpolation="nearest")
+    mask_nib = resample_to_img(mask_nib_resp, input_nib, interpolation="nearest")
 
     output = mask_nib.get_fdata()
 
