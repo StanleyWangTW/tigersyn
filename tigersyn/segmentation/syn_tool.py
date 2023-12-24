@@ -4,20 +4,17 @@ import sys
 import warnings
 
 import nibabel as nib
-from nilearn.image import reorder_img
+from nilearn.image import reorder_img, resample_img
 import numpy as np
 import onnxruntime as ort
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
 label_all = dict()
-label_all['synthseg'] = (2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-                         24, 26, 28, 41, 42, 43, 44, 46, 47, 49, 50, 51, 52,
-                         53, 54, 58, 60)
+label_all['synthseg'] = (2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 24, 26, 28, 41, 42,
+                         43, 44, 46, 47, 49, 50, 51, 52, 53, 54, 58, 60)
 
-model_servers = [
-    'https://github.com/StanleyWangTW/tigersyn/releases/download/modelhub/'
-]
+model_servers = ['https://github.com/StanleyWangTW/tigersyn/releases/download/modelhub/']
 
 # determine if application is a script file or frozen exe
 if getattr(sys, 'frozen', False):
@@ -62,12 +59,15 @@ def read_file(model_ff, input_file):
     """load nib and reorder"""
     input_nib = nib.load(input_file)
     vol_nib = reorder_img(input_nib, resample="continuous")
+
+    if model_ff.split('_')[1] == 'synthseg':
+        vol_nib = resample_voxel(vol_nib, (1, 1, 1), interpolation='continuous')
+
     return vol_nib
 
 
 def get_mode(model_ff):
-    seg_mode, version, model_str = basename(model_ff).split('_')[
-        1:4]  # aseg43, bet
+    seg_mode, version, model_str = basename(model_ff).split('_')[1:4]  # aseg43, bet
     # print(seg_mode, version , model_str)
 
     return seg_mode, version, model_str
@@ -77,17 +77,33 @@ def normalize(data):
     return (data - data.min()) / (data.max() - data.min())
 
 
+def resample_voxel(data_nib, voxelsize, target_shape=None, interpolation='continuous'):
+    affine = data_nib.affine
+    target_affine = affine.copy()
+
+    factor = np.zeros(3)
+    for i in range(3):
+        factor[i] = voxelsize[i] / \
+            np.sqrt(affine[0, i]**2 + affine[1, i]**2 + affine[2, i]**2)
+        target_affine[:3, i] = target_affine[:3, i] * factor[i]
+
+    new_nib = resample_img(data_nib,
+                           target_affine=target_affine,
+                           target_shape=target_shape,
+                           interpolation=interpolation)
+
+    return new_nib
+
+
 def predict(model, data, GPU):
     """ model: onnx file path
         data: numpy.Array
         GPU: bool
         read data, then segmentation"""
     if GPU and (ort.get_device() == "GPU"):
-        ort_sess = ort.InferenceSession(model,
-                                        providers=['CUDAExecutionProvider'])
+        ort_sess = ort.InferenceSession(model, providers=['CUDAExecutionProvider'])
     else:
-        ort_sess = ort.InferenceSession(model,
-                                        providers=["CPUExecutionProvider"])
+        ort_sess = ort.InferenceSession(model, providers=["CPUExecutionProvider"])
 
     data_type = 'float32'
     return ort_sess.run(None, {'input': data.astype(data_type)})[0]
@@ -98,7 +114,7 @@ def run(model_ff, input_nib, GPU):
     seg_mode, _, model_str = get_mode(model_ff)
 
     data = read_nib(input_nib)
-    # data = normalize(data)
+    data = normalize(data)
 
     logits = predict(model_ff, data, GPU)[0, ...]
 
