@@ -38,5 +38,6 @@ z: Force storing nii.gz format
 | 16    | Brain Stem             | 58    | Right Accumbens area    |
 | 17    | Left Hippocampus       | 60    | Right VentralDC         |
 | 18    | Left Amygdala          |
+| 24    | CSF                    |
 | 26    | Left Accumbens area    |
 | 28    | Left VentralDC         |
